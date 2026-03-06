@@ -1,0 +1,648 @@
+openapi: 3.0.3
+
+info:
+  title: CityMate - Community API
+  description: API de gestion du forum communautaire et des notifications
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8083
+
+paths:
+
+  /api/forum/categories:
+    get:
+      summary: Récupérer la liste des catégories du forum
+      tags:
+        - Forum
+      responses:
+        '200':
+          description: Liste des catégories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumCategory'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forum/discussions:
+    get:
+      summary: Récupérer la liste des discussions
+      tags:
+        - Forum
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: resolved
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des discussions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumDiscussion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Créer une nouvelle discussion
+      tags:
+        - Forum
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDiscussionRequest'
+      responses:
+        '201':
+          description: Discussion créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumDiscussion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forum/discussions/{discussionId}:
+    get:
+      summary: Récupérer les détails d'une discussion
+      tags:
+        - Forum
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Détails de la discussion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumDiscussion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Modifier une discussion (auteur ou admin)
+      tags:
+        - Forum
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDiscussionRequest'
+      responses:
+        '200':
+          description: Discussion modifiée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumDiscussion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Supprimer une discussion (auteur ou admin)
+      tags:
+        - Forum
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Discussion supprimée
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forum/discussions/{discussionId}/replies:
+    get:
+      summary: Récupérer les réponses d'une discussion
+      tags:
+        - Forum
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Liste des réponses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumReply'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Répondre à une discussion
+      tags:
+        - Forum
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReplyRequest'
+      responses:
+        '201':
+          description: Réponse créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumReply'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forum/discussions/{discussionId}/react:
+    post:
+      summary: Réagir à une discussion avec un emoji
+      tags:
+        - Forum
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: discussionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReactionRequest'
+      responses:
+        '201':
+          description: Réaction ajoutée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumReaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/notifications:
+    get:
+      summary: Récupérer les notifications de l'utilisateur
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste des notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/notifications/read-all:
+    put:
+      summary: Marquer toutes les notifications comme lues
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Toutes les notifications marquées comme lues
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/notifications/{id}/read:
+    put:
+      summary: Marquer une notification comme lue
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Notification marquée comme lue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/notifications/admin:
+    post:
+      summary: Créer une notification (admin)
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNotificationRequest'
+      responses:
+        '201':
+          description: Notification créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/notifications/broadcast:
+    post:
+      summary: Envoyer une notification globale à tous les utilisateurs (admin)
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastNotificationRequest'
+      responses:
+        '200':
+          description: Notification envoyée à tous
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+
+    ForumCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        orderIndex:
+          type: integer
+
+    ForumDiscussion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+          format: uuid
+        authorId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        isPinned:
+          type: boolean
+        isLocked:
+          type: boolean
+        isResolved:
+          type: boolean
+        viewsCount:
+          type: integer
+        repliesCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateDiscussionRequest:
+      type: object
+      required:
+        - categoryId
+        - title
+        - content
+      properties:
+        categoryId:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 3
+        content:
+          type: string
+          minLength: 10
+
+    UpdateDiscussionRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+        content:
+          type: string
+          minLength: 10
+        isPinned:
+          type: boolean
+        isLocked:
+          type: boolean
+        isResolved:
+          type: boolean
+
+    ForumReply:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        discussionId:
+          type: string
+          format: uuid
+        authorId:
+          type: string
+          format: uuid
+        content:
+          type: string
+        quotedReplyId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateReplyRequest:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          minLength: 2
+        quotedReplyId:
+          type: string
+          format: uuid
+
+    ForumReaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        targetType:
+          type: string
+          enum: [discussion, reply]
+        targetId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        emoji:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateReactionRequest:
+      type: object
+      required:
+        - emoji
+      properties:
+        emoji:
+          type: string
+          example: "👍"
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        link:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateNotificationRequest:
+      type: object
+      required:
+        - userId
+        - type
+        - title
+      properties:
+        userId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        link:
+          type: string
+
+    BroadcastNotificationRequest:
+      type: object
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        link:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        message:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequest:
+      description: Requête invalide
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Non authentifié
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Accès interdit
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Ressource introuvable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Erreur interne
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
