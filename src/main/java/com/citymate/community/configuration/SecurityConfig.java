@@ -23,11 +23,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Swagger
                         .requestMatchers("/swagger-ui.html", "/openapi-community.yaml", "/webjars/**").permitAll()
-                        // Routes publiques (guest)
-                        .requestMatchers(HttpMethod.GET, "/api/forum/categories").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/forum/discussions").permitAll()
+                        // Routes publiques — compatibles /api (local) et /api/v1 (docker)
+                        .requestMatchers(HttpMethod.GET, "/api/forum/categories", "/api/v1/forum/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/forum/discussions", "/api/v1/forum/discussions").permitAll()
                         // Routes admin uniquement
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**", "/api/v1/admin/**").hasRole("ADMIN")
                         // Tout le reste nécessite d'être connecté (client ou admin)
                         .anyRequest().authenticated()
                 )

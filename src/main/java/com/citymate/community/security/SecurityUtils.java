@@ -8,10 +8,16 @@ import org.springframework.security.core.GrantedAuthority;
 public class SecurityUtils {
 
     public static UUID getCurrentUserId() {
-        String userId = (String) SecurityContextHolder.getContext()
+        String principal = (String) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return UUID.fromString(userId);
+        try {
+            return UUID.fromString(principal);
+        } catch (IllegalArgumentException e) {
+            // Le subject du JWT est un username (ex: "alice"), pas un UUID
+            // On génère un UUID déterministe basé sur le username
+            return UUID.nameUUIDFromBytes(principal.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        }
     }
 
     public static String getCurrentUserRole() {

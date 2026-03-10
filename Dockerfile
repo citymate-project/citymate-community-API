@@ -10,7 +10,6 @@ FROM gradle:8.5-jdk17-alpine AS build
 WORKDIR /app
 
 # Copier les fichiers de dépendances en premier (cache Docker)
-# gradle est déjà installé dans l'image de base — pas besoin de gradlew
 COPY build.gradle settings.gradle ./
 
 # Télécharger les dépendances (layer mis en cache si build.gradle ne change pas)
