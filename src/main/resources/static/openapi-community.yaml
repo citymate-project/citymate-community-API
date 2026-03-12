@@ -26,6 +26,34 @@ paths:
                   $ref: '#/components/schemas/ForumCategory'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /api/admin/forum/categories:
+    post:
+      summary: Créer une catégorie de forum (admin uniquement)
+      tags:
+        - Admin
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '201':
+          description: Catégorie créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumCategory'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /api/forum/discussions:
     get:
@@ -457,6 +485,23 @@ components:
         content:
           type: string
           minLength: 10
+
+    CreateCategoryRequest:
+      type: object
+      required:
+        - name
+        - slug
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        orderIndex:
+          type: integer
 
     UpdateDiscussionRequest:
       type: object

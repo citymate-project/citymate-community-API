@@ -29,7 +29,7 @@ class NotificationBusinessTest {
     private NotificationMapper mapper;
 
     @InjectMocks
-    private NotificationBusiness service;
+    private NotificationBusiness business;
 
     @Test
     void getUserNotifications_shouldReturnList() {
@@ -43,7 +43,7 @@ class NotificationBusinessTest {
         when(repository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of(notif));
         when(mapper.toDTO(notif)).thenReturn(dto);
 
-        List<NotificationDTO> result = service.getUserNotifications(userId);
+        List<NotificationDTO> result = business.getUserNotifications(userId);
 
         assertEquals(1, result.size());
         assertEquals("Test", result.get(0).getTitle());
@@ -54,7 +54,7 @@ class NotificationBusinessTest {
         UUID userId = UUID.randomUUID();
         when(repository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of());
 
-        List<NotificationDTO> result = service.getUserNotifications(userId);
+        List<NotificationDTO> result = business.getUserNotifications(userId);
 
         assertTrue(result.isEmpty());
     }
@@ -78,7 +78,7 @@ class NotificationBusinessTest {
         when(repository.save(any())).thenReturn(saved);
         when(mapper.toDTO(saved)).thenReturn(dto);
 
-        NotificationDTO result = service.createNotification(request);
+        NotificationDTO result = business.createNotification(request);
 
         assertNotNull(result);
         assertEquals("Bienvenue", result.getTitle());
@@ -91,7 +91,7 @@ class NotificationBusinessTest {
         when(repository.findById(notifId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () ->
-                service.markAsRead(notifId, UUID.randomUUID())
+                business.markAsRead(notifId, UUID.randomUUID())
         );
     }
 
@@ -106,7 +106,7 @@ class NotificationBusinessTest {
         when(repository.findById(notifId)).thenReturn(Optional.of(notif));
 
         assertThrows(IllegalArgumentException.class, () ->
-                service.markAsRead(notifId, UUID.randomUUID())
+                business.markAsRead(notifId, UUID.randomUUID())
         );
     }
 
@@ -125,7 +125,7 @@ class NotificationBusinessTest {
         when(repository.save(notif)).thenReturn(notif);
         when(mapper.toDTO(notif)).thenReturn(dto);
 
-        NotificationDTO result = service.markAsRead(notifId, userId);
+        NotificationDTO result = business.markAsRead(notifId, userId);
 
         assertTrue(result.getIsRead());
         verify(repository, times(1)).save(notif);
@@ -140,7 +140,7 @@ class NotificationBusinessTest {
 
         when(repository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of(n1, n2));
 
-        service.markAllAsRead(userId);
+        business.markAllAsRead(userId);
 
         assertTrue(n1.getIsRead());
         assertTrue(n2.getIsRead());

@@ -34,7 +34,7 @@ class ForumDiscussionBusinessTest {
     private ForumDiscussionMapper mapper;
 
     @InjectMocks
-    private ForumDiscussionBusiness service;
+    private ForumDiscussionBusiness business;
 
     @Test
     void createDiscussion_shouldReturnDTO_whenCategoryExists() {
@@ -71,7 +71,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.save(any())).thenReturn(saved);
         when(mapper.toDTO(saved)).thenReturn(dto);
 
-        ForumDiscussionDTO result = service.createDiscussion(request, authorId);
+        ForumDiscussionDTO result = business.createDiscussion(request, authorId);
 
         assertNotNull(result);
         assertEquals("Mon titre", result.getTitle());
@@ -90,7 +90,7 @@ class ForumDiscussionBusinessTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () ->
-                service.createDiscussion(request, UUID.randomUUID())
+                business.createDiscussion(request, UUID.randomUUID())
         );
 
         verify(discussionRepository, never()).save(any());
@@ -102,7 +102,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () ->
-                service.getDiscussionById(id)
+                business.getDiscussionById(id)
         );
     }
 
@@ -117,7 +117,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findById(id)).thenReturn(Optional.of(discussion));
         when(mapper.toDTO(discussion)).thenReturn(dto);
 
-        ForumDiscussionDTO result = service.getDiscussionById(id);
+        ForumDiscussionDTO result = business.getDiscussionById(id);
 
         assertNotNull(result);
         assertEquals("Test", result.getTitle());
@@ -134,7 +134,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findById(discussionId)).thenReturn(Optional.of(discussion));
 
         assertDoesNotThrow(() ->
-                service.deleteDiscussion(discussionId, authorId, "CLIENT")
+                business.deleteDiscussion(discussionId, authorId, "CLIENT")
         );
 
         verify(discussionRepository, times(1)).delete(discussion);
@@ -152,7 +152,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findById(discussionId)).thenReturn(Optional.of(discussion));
 
         assertDoesNotThrow(() ->
-                service.deleteDiscussion(discussionId, adminId, "ADMIN")
+                business.deleteDiscussion(discussionId, adminId, "ADMIN")
         );
 
         verify(discussionRepository, times(1)).delete(discussion);
@@ -170,7 +170,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findById(discussionId)).thenReturn(Optional.of(discussion));
 
         assertThrows(IllegalArgumentException.class, () ->
-                service.deleteDiscussion(discussionId, otherId, "CLIENT")
+                business.deleteDiscussion(discussionId, otherId, "CLIENT")
         );
 
         verify(discussionRepository, never()).delete(any());
@@ -181,7 +181,7 @@ class ForumDiscussionBusinessTest {
         when(discussionRepository.findWithFilters(any(), any(), any()))
                 .thenReturn(List.of());
 
-        List<ForumDiscussionDTO> result = service.getDiscussions(null, null, null);
+        List<ForumDiscussionDTO> result = business.getDiscussions(null, null, null);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
