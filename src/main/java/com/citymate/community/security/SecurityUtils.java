@@ -26,6 +26,6 @@ public class SecurityUtils {
                 .map(GrantedAuthority::getAuthority)
                 .map(a -> a.replace("ROLE_", ""))
                 .findFirst()
-                .orElse("CLIENT");
+                .orElse("STUDENT");
     }
 }
