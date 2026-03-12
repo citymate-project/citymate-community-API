@@ -1,4 +1,4 @@
-package com.citymate.community.service;
+package com.citymate.community.business;
 
 import com.citymate.community.dto.BroadcastNotificationRequest;
 import com.citymate.community.dto.CreateNotificationRequest;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationBusiness {
 
     private final NotificationRepository repository;
     private final NotificationMapper mapper;

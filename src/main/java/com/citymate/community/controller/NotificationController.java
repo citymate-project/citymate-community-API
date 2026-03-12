@@ -3,7 +3,7 @@ package com.citymate.community.controller;
 import com.citymate.community.dto.CreateNotificationRequest;
 import com.citymate.community.dto.NotificationDTO;
 import com.citymate.community.security.SecurityUtils;
-import com.citymate.community.service.NotificationService;
+import com.citymate.community.business.NotificationBusiness;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private final NotificationService service;
+    private final NotificationBusiness service;
 
     // GET /api/notifications — récupérer ses notifications (client)
     @GET

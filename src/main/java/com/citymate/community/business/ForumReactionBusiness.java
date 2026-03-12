@@ -1,4 +1,4 @@
-package com.citymate.community.service;
+package com.citymate.community.business;
 
 import com.citymate.community.dto.CreateReactionRequest;
 import com.citymate.community.dto.ForumReactionDTO;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ForumReactionService {
+public class ForumReactionBusiness {
 
     private final ForumReactionRepository reactionRepository;
     private final ForumDiscussionRepository discussionRepository;
