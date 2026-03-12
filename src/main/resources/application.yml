@@ -6,7 +6,7 @@ spring:
     name: community-api
   jersey:
     type: filter
-    application-path: /api
+    application-path: /api/v1
   datasource:
     url: jdbc:postgresql://localhost:5432/community_db
     username: postgres
