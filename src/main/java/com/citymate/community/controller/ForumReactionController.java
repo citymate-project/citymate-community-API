@@ -3,7 +3,7 @@ package com.citymate.community.controller;
 import com.citymate.community.dto.CreateReactionRequest;
 import com.citymate.community.dto.ForumReactionDTO;
 import com.citymate.community.security.SecurityUtils;
-import com.citymate.community.service.ForumReactionService;
+import com.citymate.community.business.ForumReactionBusiness;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ForumReactionController {
 
-    private final ForumReactionService service;
+    private final ForumReactionBusiness service;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

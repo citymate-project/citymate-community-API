@@ -1,7 +1,7 @@
 package com.citymate.community.controller;
 
 import com.citymate.community.dto.BroadcastNotificationRequest;
-import com.citymate.community.service.NotificationService;
+import com.citymate.community.business.NotificationBusiness;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -10,14 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @Path("/admin/notifications")
 @RequiredArgsConstructor
 public class AdminNotificationController {
 
-    private final NotificationService service;
+    private final NotificationBusiness service;
 
     @POST
     @Path("/broadcast")

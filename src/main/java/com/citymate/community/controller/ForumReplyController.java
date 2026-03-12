@@ -3,7 +3,7 @@ package com.citymate.community.controller;
 import com.citymate.community.dto.CreateReplyRequest;
 import com.citymate.community.dto.ForumReplyDTO;
 import com.citymate.community.security.SecurityUtils;
-import com.citymate.community.service.ForumReplyService;
+import com.citymate.community.business.ForumReplyBusiness;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ForumReplyController {
 
-    private final ForumReplyService service;
+    private final ForumReplyBusiness service;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

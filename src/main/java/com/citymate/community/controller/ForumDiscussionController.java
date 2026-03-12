@@ -4,7 +4,7 @@ import com.citymate.community.dto.CreateDiscussionRequest;
 import com.citymate.community.dto.ForumDiscussionDTO;
 import com.citymate.community.dto.UpdateDiscussionRequest;
 import com.citymate.community.security.SecurityUtils;
-import com.citymate.community.service.ForumDiscussionService;
+import com.citymate.community.business.ForumDiscussionBusiness;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ForumDiscussionController {
 
-    private final ForumDiscussionService service;
+    private final ForumDiscussionBusiness service;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

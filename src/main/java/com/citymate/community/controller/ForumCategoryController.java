@@ -1,7 +1,7 @@
 package com.citymate.community.controller;
 
 import com.citymate.community.dto.ForumCategoryDTO;
-import com.citymate.community.service.ForumCategoryService;
+import com.citymate.community.business.ForumCategoryBusiness;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ForumCategoryController {
 
-    private final ForumCategoryService service;
+    private final ForumCategoryBusiness service;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
