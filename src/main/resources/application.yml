@@ -8,9 +8,9 @@ spring:
     type: filter
     application-path: /api/v1
   datasource:
-    url: jdbc:postgresql://localhost:5432/community_db
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5434/community_db
+    username: citymate_community
+    password: community_password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -22,4 +22,4 @@ spring:
         format_sql: true
 
 jwt:
-  secret: "citymate-super-secret-key-must-be-at-least-256-bits-long"
+  secret: Cm2K9#xP7!vQ2@wR4eT6^yU8&iO0*aS1-dF3+gH5_jL9(kM2)nB4
