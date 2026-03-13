@@ -12,13 +12,23 @@ public class GenerateTestToken {
         String secret = "citymate-super-secret-key-must-be-at-least-256-bits-long";
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-        String token = Jwts.builder()
-                .subject("550e8400-e29b-41d4-a716-446655440000")
-                .claim("role", "CLIENT")
+        // Token ETUDIANT
+        String etudiantToken = Jwts.builder()
+                .subject(UUID.randomUUID().toString())
+                .claim("role", "ETUDIANT")
                 .expiration(new Date(System.currentTimeMillis() + 86400000L * 365))
                 .signWith(key)
                 .compact();
 
-        System.out.println("TOKEN: " + token);
+        // Token ADMIN
+        String adminToken = Jwts.builder()
+                .subject(UUID.randomUUID().toString())
+                .claim("role", "ADMIN")
+                .expiration(new Date(System.currentTimeMillis() + 86400000L * 365))
+                .signWith(key)
+                .compact();
+
+        System.out.println("ETUDIANT TOKEN: " + etudiantToken);
+        System.out.println("ADMIN TOKEN:    " + adminToken);
     }
 }
